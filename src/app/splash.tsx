@@ -33,7 +33,7 @@ export default function SplashScreen() {
 
     // Pasa automáticamente a la pantalla principal después de 3 segundos
     const timer = setTimeout(() => {
-      router.replace('/home');
+      router.replace('/registro');
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -72,7 +72,7 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A1628',
+    backgroundColor: '#475e81',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 24,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     right: 30,
   },
   botonTexto: {
-    color: '#4A90D9',
+    color: '#a8b4c0',
     fontSize: 16,
   },
 });
