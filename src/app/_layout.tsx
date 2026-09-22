@@ -11,7 +11,9 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="splash" />
         <Stack.Screen name="index" />
-        <Stack.Screen name="explore" />
+        <Stack.Screen name="home" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="registro" />
       </Stack>
     </ThemeProvider>
   );

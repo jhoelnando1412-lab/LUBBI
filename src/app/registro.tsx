@@ -9,6 +9,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     ScrollView,
+    Image,
 } from 'react-native';
 import { InputField } from '../components/InputField';
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -81,8 +82,13 @@ router.replace('/home');
         <View style={styles.container}>
           
           <View style={styles.header}>
-            <Text style={styles.titulo}>Crear cuenta</Text>
-            <Text style={styles.subtitulo}>Regístrate en LUBBI</Text>
+            <Image 
+              source={require('../../assets/images/logo.png')} 
+              style={styles.logo} 
+              resizeMode="contain" 
+            />
+            <Text style={styles.titulo}>LUBBI</Text>
+            <Text style={styles.subtitulo}>Regístrate</Text>
           </View>
 
           <View style={styles.formContainer}>
@@ -126,14 +132,14 @@ router.replace('/home');
             />
 
             <PrimaryButton 
-              title="Registrarme" 
+              texto="Registrarme" 
               onPress={registrar} 
               buttonStyle={styles.registerBoton}
             />
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerTexto}>¿Ya tienes una cuenta? </Text>
+            <Text style={styles.footerTexto}>¿Ya tienes cuenta? </Text>
             <TouchableOpacity onPress={() => router.push('/login')}>
               <Text style={styles.loginEnlace}>Inicia sesión</Text>
             </TouchableOpacity>
@@ -151,22 +157,28 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#121215',
+    backgroundColor: '#0A1628',
     padding: 24,
     justifyContent: 'center',
   },
   header: {
     marginTop: 40,
     marginBottom: 30,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 12,
   },
   titulo: {
-    color: '#FF8C00',
+    color: '#FFD700',
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 8,
   },
   subtitulo: {
-    color: '#A0A0B0',
+    color: '#4A90D9',
     fontSize: 16,
   },
   formContainer: {
@@ -184,11 +196,11 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   footerTexto: {
-    color: '#A0A0B0',
+    color: '#999999',
     fontSize: 15,
   },
   loginEnlace: {
-    color: '#FF8C00',
+    color: '#FFD700',
     fontSize: 15,
     fontWeight: 'bold',
   },

@@ -1,15 +1,17 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
-  Alert,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Image,
+    Alert
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { InputField } from '../components/InputField';
 import { PrimaryButton } from '../components/PrimaryButton';
 
@@ -17,15 +19,18 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const iniciarSesion = () => {
+  const iniciarSesion = async () => {
     if (!email || !password) {
-      Alert.alert('Campos incompletos', 'Ingresa tu correo y contraseña.');
+      Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
     }
     
-    // Por ahora solo navegamos a /home (se conectará a backend luego)
-    console.log('Login attempt con:', email, password);
-    router.replace('/home');
+    try {
+      await AsyncStorage.setItem('sesion', 'activa');
+      router.replace('/home');
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo guardar la sesión.');
+    }
   };
 
   return (
@@ -37,13 +42,16 @@ export default function Login() {
         <View style={styles.container}>
           
           <View style={styles.header}>
+            <Image 
+              source={require('../../assets/images/logo.png')} 
+              style={styles.logo} 
+              resizeMode="contain" 
+            />
             <Text style={styles.titulo}>LUBBI</Text>
             <Text style={styles.eslogan}>El lubricante que necesitas, donde estás</Text>
           </View>
 
           <View style={styles.formContainer}>
-            <Text style={styles.bienvenido}>Bienvenido de nuevo</Text>
-            
             <InputField
               label="Correo electrónico"
               placeholder="tu@email.com"
@@ -55,20 +63,14 @@ export default function Login() {
 
             <InputField
               label="Contraseña"
-              placeholder="••••••••"
+              placeholder="Tu contraseña"
               secureTextEntry
               value={password}
               onChangeText={setPassword}
             />
 
-            <View style={styles.olvidoContainer}>
-              <TouchableOpacity>
-                <Text style={styles.olvidoTexto}>¿Olvidaste tu contraseña?</Text>
-              </TouchableOpacity>
-            </View>
-
             <PrimaryButton 
-              title="Iniciar sesión" 
+              texto="Iniciar sesión" 
               onPress={iniciarSesion} 
               buttonStyle={styles.loginBoton}
             />
@@ -93,63 +95,52 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#121215',
+    backgroundColor: '#0A1628',
     padding: 24,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   header: {
-    alignItems: 'center',
-    marginTop: 60,
+    marginTop: 40,
     marginBottom: 40,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    marginBottom: 16,
   },
   titulo: {
-    color: '#FF8C00',
-    fontSize: 42,
-    fontWeight: '900',
-    letterSpacing: 2,
+    color: '#FFD700',
+    fontSize: 36,
+    fontWeight: 'bold',
     marginBottom: 8,
   },
   eslogan: {
-    color: '#A0A0B0',
-    fontSize: 14,
+    color: '#4A90D9',
+    fontSize: 16,
+    fontStyle: 'italic',
     textAlign: 'center',
-    fontWeight: '500',
   },
   formContainer: {
     flex: 1,
-    justifyContent: 'center',
-  },
-  bienvenido: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 24,
-  },
-  olvidoContainer: {
-    alignItems: 'flex-end',
-    marginBottom: 24,
-  },
-  olvidoTexto: {
-    color: '#FF8C00',
-    fontSize: 14,
-    fontWeight: '600',
   },
   loginBoton: {
-    marginTop: 8,
+    marginTop: 24,
+    marginBottom: 10,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
     marginTop: 20,
+    marginBottom: 30,
   },
   footerTexto: {
-    color: '#A0A0B0',
+    color: '#999999',
     fontSize: 15,
   },
   registroEnlace: {
-    color: '#FF8C00',
+    color: '#FFD700',
     fontSize: 15,
     fontWeight: 'bold',
   },

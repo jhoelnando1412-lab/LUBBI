@@ -33,7 +33,7 @@ export default function SplashScreen() {
 
     // Pasa automáticamente a la pantalla principal después de 3 segundos
     const timer = setTimeout(() => {
-      router.replace('/registro');
+      router.replace('/login');
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -62,7 +62,7 @@ export default function SplashScreen() {
       </Animated.View>
 
       {/* Botón saltar */}
-      <TouchableOpacity style={styles.botonSaltar} onPress={() => router.replace('/home')}>
+      <TouchableOpacity style={styles.botonSaltar} onPress={() => router.replace('/login')}>
         <ThemedText style={styles.botonTexto}>Saltar →</ThemedText>
       </TouchableOpacity>
     </ThemedView>
