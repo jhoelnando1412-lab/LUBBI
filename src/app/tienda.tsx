@@ -31,7 +31,7 @@ export default function TiendaDetail() {
 
   useEffect(() => {
     if (!id) return;
-    fetch(`http://192.168.1.43:3000/api/tiendas/${id}/productos`)
+    fetch(`https://lubbi.onrender.com/api/tiendas/${id}/productos`)
       .then(res => {
         if (!res.ok) throw new Error('Error al cargar productos');
         return res.json();
@@ -64,15 +64,15 @@ export default function TiendaDetail() {
   const renderProducto = ({ item }: { item: Producto }) => {
     const imageUrl = BRAND_LOGOS[item.marca];
     const stockColor = item.stock > 0 ? '#4CAF50' : '#F44336'; // Verde / Rojo
-    
+
     return (
       <View style={styles.card}>
         <View style={styles.imageContainer}>
           {imageUrl ? (
-            <Image 
-              source={{ uri: imageUrl }} 
-              style={styles.logo} 
-              resizeMode="contain" 
+            <Image
+              source={{ uri: imageUrl }}
+              style={styles.logo}
+              resizeMode="contain"
             />
           ) : (
             <Text style={styles.emoji}>🛢️</Text>

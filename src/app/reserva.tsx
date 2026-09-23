@@ -29,7 +29,7 @@ export default function Reserva() {
         return;
       }
 
-      const res = await fetch('http://192.168.1.43:3000/api/reservas', {
+      const res = await fetch('https://lubbi.onrender.com/api/reservas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -80,7 +80,7 @@ export default function Reserva() {
         <Text style={styles.textoLabel}>Producto: <Text style={styles.textoValor}>{nombre}</Text></Text>
         <Text style={styles.textoLabel}>Marca: <Text style={styles.textoValor}>{marca}</Text></Text>
         <Text style={styles.textoLabel}>Precio: <Text style={styles.textoValor}>Bs. {precio.toFixed(2)}</Text></Text>
-        
+
         <View style={styles.cantidadContainer}>
           <Text style={styles.textoLabel}>Cantidad:</Text>
           <View style={styles.counter}>
@@ -107,16 +107,16 @@ export default function Reserva() {
 
       <View style={styles.qrCard}>
         <Text style={styles.sectionTitle}>Pagar mediante QR</Text>
-        <Image 
-          source={require('../../assets/images/qr.jpeg')} 
-          style={styles.qrImage} 
-          resizeMode="contain" 
+        <Image
+          source={require('../../assets/images/qr.jpeg')}
+          style={styles.qrImage}
+          resizeMode="contain"
         />
         <Text style={styles.qrTexto}>Escanea el código QR para realizar el pago</Text>
         <Text style={styles.qrTextoSecundario}>Transferencia directa a cuenta del vendedor</Text>
       </View>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.confirmarBtn}
         onPress={confirmarReserva}
         disabled={loading}
@@ -128,7 +128,7 @@ export default function Reserva() {
         )}
       </TouchableOpacity>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.cancelarBtn}
         onPress={() => router.back()}
         disabled={loading}

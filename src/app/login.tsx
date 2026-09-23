@@ -25,10 +25,10 @@ export default function Login() {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
     }
-    
+
     try {
       const respuesta = await fetch(
-        'http://192.168.1.43:3000/api/usuarios/login',
+        'https://lubbi.onrender.com/api/usuarios/login',
         {
           method: 'POST',
           headers: {
@@ -72,13 +72,13 @@ export default function Login() {
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={{ flex: 1 }} 
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
-          
+
           <View style={styles.header}>
             <LubbiLogo size={120} />
             <Text style={styles.titulo}>LUBBI</Text>
@@ -103,9 +103,9 @@ export default function Login() {
               onChangeText={setPassword}
             />
 
-            <PrimaryButton 
-              texto="Iniciar sesión" 
-              onPress={iniciarSesion} 
+            <PrimaryButton
+              texto="Iniciar sesión"
+              onPress={iniciarSesion}
               buttonStyle={styles.loginBoton}
             />
           </View>

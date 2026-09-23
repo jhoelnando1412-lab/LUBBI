@@ -89,7 +89,7 @@ export default function ClienteHome() {
 
   const cargarProductos = async () => {
     try {
-      const res = await fetch('http://192.168.1.43:3000/api/productos');
+      const res = await fetch('https://lubbi.onrender.com/api/productos');
       const data = await res.json();
       setProductos(data);
       setFiltrados(data);
@@ -207,7 +207,7 @@ export default function ClienteHome() {
                 </TouchableOpacity>
 
                 {/* Botón Reservar fijo al fondo de la tarjeta */}
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.reservarBtn}
                   onPress={() => router.push({
                     pathname: '/reserva',

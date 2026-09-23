@@ -40,12 +40,12 @@ export default function Conversaciones() {
 
       if (conversacionId) {
         // Ver mensajes de una conversación específica
-        const res = await fetch(`http://192.168.1.43:3000/api/perfil/conversaciones/${conversacionId}/mensajes`);
+        const res = await fetch(`https://lubbi.onrender.comom/api/perfil/conversaciones/${conversacionId}/mensajes`);
         const data = await res.json();
         setMensajes(data);
       } else {
         // Listar conversaciones del usuario
-        const res = await fetch(`http://192.168.1.43:3000/api/perfil/${sesion.usuario_id}/conversaciones`);
+        const res = await fetch(`https://lubbi.onrender.comom/api/perfil/${sesion.usuario_id}/conversaciones`);
         const data = await res.json();
         setConversaciones(data);
       }
@@ -57,7 +57,7 @@ export default function Conversaciones() {
   const enviarMensaje = async () => {
     if (!nuevoMsg.trim() || !conversacionId || !sesionUsuario) return;
     try {
-      const res = await fetch(`http://192.168.1.43:3000/api/perfil/conversaciones/${conversacionId}/mensajes`, {
+      const res = await fetch(`https://lubbi.onrender.comom/api/perfil/conversaciones/${conversacionId}/mensajes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ remitente_usuario_id: sesionUsuario.usuario_id, mensaje: nuevoMsg.trim() }),

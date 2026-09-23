@@ -21,7 +21,7 @@ export default function Notificaciones() {
       const sesion = await obtenerSesion();
       if (!sesion) return;
       try {
-        const res = await fetch(`http://192.168.1.43:3000/api/perfil/${sesion.usuario_id}/notificaciones`);
+        const res = await fetch(`https://lubbi.onrender.com/api/perfil/${sesion.usuario_id}/notificaciones`);
         const data = await res.json();
         setItems(data);
       } catch (e) {
@@ -35,7 +35,7 @@ export default function Notificaciones() {
 
   const marcarLeida = async (id: string) => {
     try {
-      await fetch(`http://192.168.1.43:3000/api/perfil/notificaciones/${id}/leida`, { method: 'PUT' });
+      await fetch(`https://lubbi.onrender.com/api/perfil/notificaciones/${id}/leida`, { method: 'PUT' });
       setItems(prev => prev.map(n => n.id === id ? { ...n, leida: true } : n));
     } catch (e) { /* silent */ }
   };

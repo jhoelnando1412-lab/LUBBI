@@ -19,7 +19,7 @@ export default function MiPerfil() {
       if (!sesion) return;
       setUsuarioId(sesion.usuario_id);
       try {
-        const res = await fetch(`http://192.168.1.43:3000/api/perfil/${sesion.usuario_id}`);
+        const res = await fetch(`https://lubbi.onrender.com/api/perfil/${sesion.usuario_id}`);
         const data = await res.json();
         setNombre(data.nombre || '');
         setApellido(data.apellido || '');
@@ -42,7 +42,7 @@ export default function MiPerfil() {
     }
     setGuardando(true);
     try {
-      const res = await fetch(`http://192.168.1.43:3000/api/perfil/${usuarioId}`, {
+      const res = await fetch(`https://lubbi.onrender.com/api/perfil/${usuarioId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, apellido, telefono }),

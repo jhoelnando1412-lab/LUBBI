@@ -1,15 +1,15 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
-    Alert,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Image,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Image,
 } from 'react-native';
 import { InputField } from '../components/InputField';
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -66,7 +66,7 @@ export default function Registro() {
       }
 
       const respuesta = await fetch(
-        'http://192.168.1.43:3000/api/usuarios',
+        'https://lubbi.onrender.com/api/usuarios',
         {
           method: 'POST',
           headers: {
@@ -92,18 +92,18 @@ export default function Registro() {
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={{ flex: 1 }} 
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
-          
+
           <View style={styles.header}>
-            <Image 
-              source={require('../../assets/images/logo.png')} 
-              style={styles.logo} 
-              resizeMode="contain" 
+            <Image
+              source={require('../../assets/images/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
             />
             <Text style={styles.titulo}>LUBBI</Text>
             <Text style={styles.subtitulo}>Regístrate</Text>

@@ -19,7 +19,7 @@ export default function Favoritos() {
       const sesion = await obtenerSesion();
       if (!sesion) return;
       try {
-        const res = await fetch(`http://192.168.1.43:3000/api/perfil/${sesion.usuario_id}/favoritos`);
+        const res = await fetch(`https://lubbi.onrender.com/api/perfil/${sesion.usuario_id}/favoritos`);
         const data = await res.json();
         setItems(data);
       } catch (e) {

@@ -18,7 +18,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('http://192.168.1.43:3000/api/tiendas')
+    fetch('https://lubbi.onrender.com/api/tiendas')
       .then(res => {
         if (!res.ok) throw new Error('Error al cargar tiendas');
         return res.json();
@@ -40,7 +40,7 @@ export default function Home() {
       <Text style={styles.info}>📞 {item.telefono}</Text>
       <Text style={styles.info}>📦 Productos disponibles: {item.cantidad_productos}</Text>
       <Text style={styles.info}>💰 Desde: Bs. {parseFloat(item.precio_minimo).toFixed(2)}</Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.boton}
         onPress={() => router.push({ pathname: '/tienda', params: { id: item.id, nombre: item.nombre_comercial, telefono: item.telefono } } as any)}
       >
