@@ -1,18 +1,17 @@
-import dotenv from 'dotenv';
 import { Pool } from 'pg';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
 export const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD || undefined,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 pool.on('connect', () => {
-  console.log('✅ Conectado a PostgreSQL');
+  console.log('✅ Conectado a Neon PostgreSQL');
 });
 
 pool.on('error', (error) => {

@@ -1,164 +1,71 @@
-import { ThemedText } from '@/components/themed-text';
-import { useState } from 'react';
-import {
-    FlatList,
-    Linking,
-    StatusBar,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 
-const vendedores = [
-  {
-    id: '1',
-    nombre: 'Lubricentro Don Roberto',
-    producto: 'Aceite 20W-50',
-    marca: 'Mobil',
-    precio: 'Bs. 280',
-    distancia: '1.2 km',
-    stock: 'Disponible',
-    telefono: '59170000001',
-    zona: 'Plan 3000',
-  },
-  {
-    id: '2',
-    nombre: 'Distribuidora El Motor',
-    producto: 'Aceite 5W-30',
-    marca: 'Castrol',
-    precio: 'Bs. 320',
-    distancia: '2.5 km',
-    stock: 'Disponible',
-    telefono: '59170000002',
-    zona: 'Equipetrol',
-  },
-  {
-    id: '3',
-    nombre: 'Lubricantes Santa Cruz',
-    producto: 'Aceite 10W-40',
-    marca: 'Shell',
-    precio: 'Bs. 300',
-    distancia: '3.1 km',
-    stock: 'Últimas unidades',
-    telefono: '59170000003',
-    zona: 'Av. Cristo Redentor',
-  },
-  {
-    id: '4',
-    nombre: 'AutoLub Express',
-    producto: 'Aceite 15W-40',
-    marca: 'Valvoline',
-    precio: 'Bs. 260',
-    distancia: '4.0 km',
-    stock: 'Disponible',
-    telefono: '59170000004',
-    zona: 'Villa 1ro de Mayo',
-  },
-];
+interface Tienda {
+  id: number;
+  nombre_comercial: string;
+  descripcion: string;
+  telefono: string;
+  direccion: string;
+  cantidad_productos: string;
+  precio_minimo: string;
+}
 
-const abrirWhatsApp = (telefono: string) => {
-  Linking.openURL(`https://wa.me/${telefono}`);
-};
+export default function Home() {
+  const [tiendas, setTiendas] = useState<Tienda[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default function HomeScreen() {
-  const [busqueda, setBusqueda] = useState('');
+  useEffect(() => {
+    fetch('http://192.168.1.43:3000/api/tiendas')
+      .then(res => {
+        if (!res.ok) throw new Error('Error al cargar tiendas');
+        return res.json();
+      })
+      .then(data => {
+        setTiendas(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
-  const filtrados = vendedores.filter(
-    (v) =>
-      v.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-      v.producto.toLowerCase().includes(busqueda.toLowerCase()) ||
-      v.marca.toLowerCase().includes(busqueda.toLowerCase())
+  const renderTienda = ({ item }: { item: Tienda }) => (
+    <View style={styles.card}>
+      <Text style={styles.nombre}>{item.nombre_comercial}</Text>
+      <Text style={styles.direccion}>📍 {item.direccion}</Text>
+      <Text style={styles.info}>📞 {item.telefono}</Text>
+      <Text style={styles.info}>📦 Productos disponibles: {item.cantidad_productos}</Text>
+      <Text style={styles.info}>💰 Desde: Bs. {parseFloat(item.precio_minimo).toFixed(2)}</Text>
+      <TouchableOpacity 
+        style={styles.boton}
+        onPress={() => router.push({ pathname: '/tienda', params: { id: item.id, nombre: item.nombre_comercial, telefono: item.telefono } } as any)}
+      >
+        <Text style={styles.textoBoton}>Ver productos</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#0A1628" />
+    <View style={styles.container}>
+      <Text style={styles.titulo}>Tiendas Disponibles</Text>
 
-      {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <ThemedText style={styles.headerTitulo}>LUBBI</ThemedText>
-          <ThemedText style={styles.headerSubtitulo}>Santa Cruz de la Sierra</ThemedText>
-        </View>
-        <View style={styles.headerBadge}>
-          <ThemedText style={styles.headerBadgeTexto}>{filtrados.length} vendedores</ThemedText>
-        </View>
-      </View>
-
-      {/* Buscador */}
-      <View style={styles.buscadorContainer}>
-        <TextInput
-          style={styles.buscador}
-          placeholder="🔍  Buscar por producto, marca o vendedor..."
-          placeholderTextColor="#999"
-          value={busqueda}
-          onChangeText={setBusqueda}
+      {loading ? (
+        <ActivityIndicator size="large" color="#FFD700" style={styles.loader} />
+      ) : error ? (
+        <Text style={styles.error}>{error}</Text>
+      ) : (
+        <FlatList
+          data={tiendas}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderTienda}
+          contentContainerStyle={styles.list}
         />
-      </View>
-
-      {/* Filtros rápidos */}
-      <View style={styles.filtrosContainer}>
-        {['Todos', 'Mobil', 'Castrol', 'Shell', 'Valvoline'].map((f) => (
-          <TouchableOpacity key={f} style={styles.filtroBoton}>
-            <ThemedText style={styles.filtroTexto}>{f}</ThemedText>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Lista */}
-      <FlatList
-        data={filtrados}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.lista}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          <View style={styles.vacio}>
-            <ThemedText style={styles.vacioTexto}>No se encontraron resultados</ThemedText>
-          </View>
-        }
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            {/* Header card */}
-            <View style={styles.cardHeader}>
-              <View style={styles.cardIcono}>
-                <ThemedText style={styles.cardIconoTexto}>🛢️</ThemedText>
-              </View>
-              <View style={styles.cardHeaderInfo}>
-                <ThemedText style={styles.cardNombre}>{item.nombre}</ThemedText>
-                <ThemedText style={styles.cardZona}>📍 {item.zona}</ThemedText>
-              </View>
-              <ThemedText style={styles.cardDistancia}>{item.distancia}</ThemedText>
-            </View>
-
-            {/* Info producto */}
-            <View style={styles.cardProducto}>
-              <ThemedText style={styles.cardProductoTexto}>
-                {item.producto} — {item.marca}
-              </ThemedText>
-            </View>
-
-            {/* Tags */}
-            <View style={styles.cardTags}>
-              <View style={styles.tagPrecio}>
-                <ThemedText style={styles.tagTexto}>{item.precio}</ThemedText>
-              </View>
-              <View style={[styles.tagStock, item.stock === 'Disponible' ? styles.tagVerde : styles.tagNaranja]}>
-                <ThemedText style={styles.tagTexto}>{item.stock}</ThemedText>
-              </View>
-            </View>
-
-            {/* Botón WhatsApp */}
-            <TouchableOpacity
-              style={styles.botonWhatsapp}
-              onPress={() => abrirWhatsApp(item.telefono)}>
-              <ThemedText style={styles.botonTexto}>💬  Contactar por WhatsApp</ThemedText>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-    </SafeAreaView>
+      )}
+    </View>
   );
 }
 
@@ -166,164 +73,62 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0A1628',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#0A1628',
-  },
-  headerTitulo: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFD700',
-  },
-  headerSubtitulo: {
-    fontSize: 12,
-    color: '#4A90D9',
-  },
-  headerBadge: {
-    backgroundColor: '#4A90D9',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-  },
-  headerBadgeTexto: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  buscadorContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    backgroundColor: '#0A1628',
-  },
-  buscador: {
-    backgroundColor: '#1C2E4A',
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 14,
-    color: '#fff',
-    borderWidth: 1,
-    borderColor: '#4A90D9',
-  },
-  filtrosContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    gap: 8,
-    paddingBottom: 12,
-  },
-  filtroBoton: {
-    backgroundColor: '#1C2E4A',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderWidth: 1,
-    borderColor: '#4A90D9',
-  },
-  filtroTexto: {
-    color: '#4A90D9',
-    fontSize: 12,
-  },
-  lista: {
     padding: 16,
-    gap: 12,
+    paddingTop: 50,
+  },
+  titulo: {
+    color: '#FFD700',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  loader: {
+    marginTop: 40,
+  },
+  error: {
+    color: '#FFD700',
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+  },
+  list: {
+    paddingBottom: 20,
   },
   card: {
     backgroundColor: '#1C2E4A',
-    borderRadius: 16,
-    padding: 16,
-    gap: 12,
-    borderWidth: 1,
-    borderColor: '#2A4A6B',
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  cardIcono: {
-    width: 44,
-    height: 44,
-    backgroundColor: '#0A1628',
     borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 16,
+    marginBottom: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: '#4A90D9',
   },
-  cardIconoTexto: {
-    fontSize: 22,
-  },
-  cardHeaderInfo: {
-    flex: 1,
-  },
-  cardNombre: {
-    color: '#fff',
+  nombre: {
+    color: '#FFFFFF',
+    fontSize: 18,
     fontWeight: 'bold',
-    fontSize: 15,
+    marginBottom: 8,
   },
-  cardZona: {
-    color: '#4A90D9',
-    fontSize: 12,
-  },
-  cardDistancia: {
-    color: '#FFD700',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  cardProducto: {
-    backgroundColor: '#0A1628',
-    borderRadius: 8,
-    padding: 8,
-  },
-  cardProductoTexto: {
-    color: '#ccc',
-    fontSize: 13,
-  },
-  cardTags: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  tagPrecio: {
-    backgroundColor: '#1a472a',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  tagStock: {
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  tagVerde: {
-    backgroundColor: '#1a472a',
-  },
-  tagNaranja: {
-    backgroundColor: '#7a3e00',
-  },
-  tagTexto: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  botonWhatsapp: {
-    backgroundColor: '#25D366',
-    borderRadius: 10,
-    padding: 12,
-    alignItems: 'center',
-  },
-  botonTexto: {
-    color: '#fff',
-    fontWeight: 'bold',
+  direccion: {
+    color: '#999999',
     fontSize: 14,
+    marginBottom: 4,
   },
-  vacio: {
+  info: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  boton: {
+    backgroundColor: '#4A90D9',
+    padding: 12,
+    borderRadius: 8,
     alignItems: 'center',
-    paddingTop: 40,
+    marginTop: 12,
   },
-  vacioTexto: {
-    color: '#999',
+  textoBoton: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
     fontSize: 16,
-  },
-}); 
+  }
+});

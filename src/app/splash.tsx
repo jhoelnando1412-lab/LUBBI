@@ -1,100 +1,66 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { router } from 'expo-router';
-import { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
+import { useEffect } from 'react';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import { obtenerSesion } from '../utils/session';
 
-export default function SplashScreen() {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.8)).current;
-  const sloganAnim = useRef(new Animated.Value(0)).current;
-
+export default function Splash() {
   useEffect(() => {
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          tension: 50,
-          friction: 7,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.timing(sloganAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    const checkAuth = async () => {
+      // Simular tiempo de carga del splash
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const sesion = await obtenerSesion();
 
-    // Pasa automáticamente a la pantalla principal después de 3 segundos
-    const timer = setTimeout(() => {
-      router.replace('/login');
-    }, 3000);
+      if (sesion && sesion.activa) {
+        if (sesion.rol === 'comprador') {
+          router.replace('/cliente-home' as any);
+        } else if (sesion.rol === 'vendedor') {
+          router.replace('/vendedor-home' as any);
+        } else {
+          router.replace('/login');
+        }
+      } else {
+        router.replace('/login');
+      }
+    };
 
-    return () => clearTimeout(timer);
+    checkAuth();
   }, []);
 
   return (
-    <ThemedView style={styles.container}>
-      {/* Logo animado */}
-      <Animated.Image
-        source={require('../../assets/images/logo.png')}
-        style={[
-          styles.logo,
-          {
-            opacity: fadeAnim,
-            transform: [{ scale: scaleAnim }],
-          },
-        ]}
-        resizeMode="contain"
+    <View style={styles.container}>
+      <Image 
+        source={require('../../assets/images/logo.png')} 
+        style={styles.logo} 
+        resizeMode="contain" 
       />
-
-      {/* Slogan animado */}
-      <Animated.View style={{ opacity: sloganAnim }}>
-        <ThemedText style={styles.slogan}>
-          El lubricante que necesitas, donde estás
-        </ThemedText>
-      </Animated.View>
-
-      {/* Botón saltar */}
-      <TouchableOpacity style={styles.botonSaltar} onPress={() => router.replace('/login')}>
-        <ThemedText style={styles.botonTexto}>Saltar →</ThemedText>
-      </TouchableOpacity>
-    </ThemedView>
+      <Text style={styles.titulo}>LUBBI</Text>
+      <Text style={styles.eslogan}>El lubricante que necesitas, donde estás</Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#475e81',
-    alignItems: 'center',
+    backgroundColor: '#0A1628',
     justifyContent: 'center',
-    gap: 24,
+    alignItems: 'center',
   },
   logo: {
-    width: 220,
-    height: 220,
+    width: 150,
+    height: 150,
+    marginBottom: 20,
   },
-  slogan: {
+  titulo: {
     color: '#FFD700',
+    fontSize: 40,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  eslogan: {
+    color: '#4A90D9',
     fontSize: 16,
-    textAlign: 'center',
-    paddingHorizontal: 40,
     fontStyle: 'italic',
-  },
-  botonSaltar: {
-    position: 'absolute',
-    bottom: 60,
-    right: 30,
-  },
-  botonTexto: {
-    color: '#a8b4c0',
-    fontSize: 16,
-  },
+  }
 });
